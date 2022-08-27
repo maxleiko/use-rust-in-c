@@ -1,0 +1,11 @@
+[package]
+name = "lib"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[lib]
+crate-type = ["cdylib"]
+
+[build-dependencies]
+cbindgen = "0.24.3"

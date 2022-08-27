@@ -1,0 +1,23 @@
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(CARGO_CMD cargo build)
+  set(TARGET_DIR "debug")
+else()
+  set(CARGO_CMD cargo build --release)
+  set(TARGET_DIR "release")
+endif()
+
+set(LIB_SO ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/lib${LIB_NAME}.so)
+
+message(STATUS LIB_SO=${LIB_SO})
+
+add_custom_target(${LIB_NAME} ALL
+  COMMENT Compiling ${LIB_NAME} module
+  COMMAND CARGO_TARGET_DIR=${CMAKE_CURRENT_BINARY_DIR} ${CARGO_CMD}
+  COMMAND cp ${LIB_SO} ${CMAKE_CURRENT_BINARY_DIR}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(${LIB_NAME} PROPERTIES LOCATION ${CMAKE_CURRENT_BINARY_DIR})
+set_target_properties(${LIB_NAME} PROPERTIES INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/target/include)
+
+add_test(NAME ${LIB_NAME}_test
+  COMMAND cargo test
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
